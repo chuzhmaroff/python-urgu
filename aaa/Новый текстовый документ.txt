@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+import operator
+
+
+def make_stat(filename):
+    site = open(filename, encoding="cp1251")
+    years = site.read().split("<h3>")[1:]
+    name = dict()
+    for year in years:
+        year = year.split("/>")
+        year[0] = year[0][0:4]
+        for i in range(1, len(year)):
+            year[i] = year[i][:year[i].index('</')].split(' ')[1]
+        name[year[0]] = year[1:]
+    stat = dict()
+    for year, name_dict in name.items():
+        count_dict = dict()
+        for i in name_dict:
+            if i in count_dict:
+                count_dict[i] += 1
+            else:
+                count_dict[i] = 1
+        names = dict(sorted(count_dict.items(), key=operator.itemgetter(1), reverse=True))
+        name_dict = get_gender(names)
+        stat[year] = name_dict
+    return stat
+
+
+def get_gender(stat):
+    stat = dict()
+    male_exceptions = ['Лёва', 'Илья', 'Никита']
+    for name, count in stat.items():
+        if (name.endswith != 'ь' or name.endswith != 'я' or name.endswith != 'а') \
+                and name in male_exceptions:
+            gender = 'male'
+        else:
+            gender = 'female'
+        stat[name] = (count, gender)
+    return stat
+
+
+def extract_general(stat):
+    info_stat = dict()
+    for names in stat.items():
+        for name in names.items():
+            if name[0] in info_stat:
+                info_stat[name[0]] += name[1][0]
+            else:
+                info_stat[name[0]] = name[1][0]
+    info_stat = dict(sorted(info_stat.items(), key=operator.itemgetter(1), reverse=True))
+    stat = []
+    for name, count in info_stat.items():
+        stat.append((name, count))
+    return stat
+
+
+def extract_general_male(stat):
+    info_stat = dict()
+    for names in stat.items():
+        for name in names.items():
+            if name[1][1] == "male":
+                if name[0] in info_stat:
+                    info_stat[name[0]] += name[1][0]
+                else:
+                    info_stat[name[0]] = name[1][0]
+    info_stat = dict(sorted(info_stat.items(), key=operator.itemgetter(1), reverse=True))
+    stat = []
+    for name, count in info_stat.items():
+        stat.append((name, count))
+    return stat
+
+
+def extract_general_female(stat):
+    info_stat = dict()
+    for names in stat.items():
+        for name in names.items():
+            if name[1][1] != "male":
+                if name[0] in info_stat:
+                    info_stat[name[0]] += name[1][0]
+                else:
+                    info_stat[name[0]] = name[1][0]
+    info_stat = dict(sorted(info_stat.items(), key=operator.itemgetter(1), reverse=True))
+    stat = []
+    for name, count in info_stat.items():
+        stat.append((name, count))
+    return stat
+
+
+def extract_year(stat, year):
+    stat = []
+    for name in stat[year].items():
+        stat.append((name[0], name[1][0]))
+    stat.sort(key=lambda tup: tup[1], reverse=True)
+    return stat
+
+
+def extract_year_male(stat, year):
+    stat = []
+    for name in stat[year].items():
+        if name[1][1] == "male":
+            stat.append((name[0], name[1][0]))
+    stat.sort(key=lambda tup: tup[1], reverse=True)
+    return stat
+
+
+def extract_year_female(stat, year):
+    stat = []
+    for name in stat[year].items():
+        if name[1][1] == "female":
+            stat.append((name[0], name[1][0]))
+    stat.sort(key=lambda tup: tup[1], reverse=True)
+    return stat
+
+
+if __name__ == '__main__':
+    pass
