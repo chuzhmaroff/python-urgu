@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistics Site</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+   body {
+    background: #c7b39b url(static/bg.jpg);
+    color: #fff;
+   }
+   .text {
+       text-align : center;
+   }
+  </style>
+</head>
+<body>
+<hr>
+<ul>
+    <li><a class="Link" href="https://importthis.pythonanywhere.com/">Стартовая</a></li>
+</ul>
+<hr>
+<div class="text">
+    Hello to statistics page! <br>
+Текушая дата - {{ date }} <br>
+Здесь вы можете посмотреть всю информацию о последних посещений сайта. <br>
+Количество посещений сайт за все время ( не уникальные) - {{ count_user }} <br>
+Уникальные ip - {{ count_unique_ip }}
+Уникальные cookies - {{ count_unique_cookie }} <br>
+Ифнормация о вашем подключении : <br>
+Ваш ip адресс - {{ ip_address }} <br>
+Ваш номер cookies - {{ cookies }} <br>
+Ваш браузер - {{ user_agent }} <br>
+Ваш браузер поддерживает языки - {{ accept_lang }} <br>
+Ваше разрешение -
+<script language=JavaScript>
+    r1 = (screen.width + '*' + screen.height + '&nbsp;');
+    document.write(r1)
+</script>
+</div>
+
+
+<head>
+<title>API карт 2ГИС</title>
+<script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
+<script type="text/javascript">
+    var map;
+
+    DG.then(function () {
+        map = DG.map('map', {
+            center: [{{ lat }}, {{ lon }}],
+            zoom: 10
+        });
+
+        DG.marker([{{ lat }}, {{ lon }}]).addTo(map).bindPopup("Information getting for ip address");
+    });
+</script>
+</head>
+
+
+<body>
+<div id="map" style="width:500px; height:400px"></div>
+</body>
+
+<br><span style="white-space: pre-line">{{ full_info_geo }}</span> <br>
+Информация о последний подклчениях с 07 11 2019 доступна на сервере в файле info_last_conn_07112019.txt
+<!--<br><span style="white-space: pre-line">{{ info_last_conn }}</span>-->
+
+</body>
+</html>
